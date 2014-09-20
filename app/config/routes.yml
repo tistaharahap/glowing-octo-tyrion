@@ -1,0 +1,11 @@
+home:
+    uri: '/'
+    methods:
+        - GET
+    controller: home
+
+about:
+    uri: '/about'
+    methods:
+        - GET
+    controller: about
