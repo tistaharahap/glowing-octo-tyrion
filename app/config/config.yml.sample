@@ -15,6 +15,16 @@ default: &default
         username: username1234
         pin: "000000"
 
+test:
+    <<: *default
+    flask:
+        <<: *flaskDefault
+        debug: True
+
+    database:
+        <<: *databaseDefault
+        database: klik_test
+
 development:
     <<: *default
     flask:
