@@ -1,11 +1,11 @@
+from app.errors import ConfigNotFoundError
 import yaml
 import os.path
 
 
 def read_yaml(filename):
     if not os.path.isfile(filename):
-        print 'not file'
-        return {}
+        raise ConfigNotFoundError('The file %s is not found' % filename)
 
     doc = {}
 

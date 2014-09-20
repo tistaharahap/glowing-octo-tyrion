@@ -3,8 +3,7 @@ import sys
 
 def read_env():
     def no_env():
-        print "[WARNING] No environment is found, defaulting to 'development'"
-        return 'development'
+        return 'test'
 
     args = sys.argv
     if len(args) == 1:
