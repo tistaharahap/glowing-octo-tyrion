@@ -1,7 +1,8 @@
 from tests.base_test import BaseTest
-from app.helpers import create_app, create_routes, load_class
+from app.helpers import create_app, create_routes, load_class, compile_assets, compile_js
 from nose.tools import raises, ok_, eq_
 from flask import Flask
+from flask.ext.assets import Environment, Bundle
 from app.errors import ConfigNotFoundError, HTTPMethodNotImplementedError, ControllerNotFoundError
 import copy
 
@@ -70,3 +71,47 @@ class AppHelperTest(BaseTest):
         routes['home']['methods'].append('POST')
 
         create_routes(app, app_routes=routes)
+
+    @raises(TypeError)
+    def test_compile_assets_with_bad_app_should_raises_error(self):
+        app = {}
+        controller_name = 'home'
+
+        assets = compile_assets(app=app,
+                                controller_name=controller_name)
+
+    @raises(TypeError)
+    def test_compile_assets_with_non_string_controller_name_should_raises_error(self):
+        app = Flask(__name__)
+        controller_name = {}
+
+        assets = compile_assets(app=app,
+                                controller_name=controller_name)
+
+    @raises(ValueError)
+    def test_compile_assets_with_0_length_string_should_raises_error(self):
+        app = Flask(__name__)
+        controller_name = ''
+
+        assets = compile_assets(app=app,
+                                controller_name=controller_name)
+
+    def test_compile_js(self):
+        controller_name = 'home'
+
+        js = compile_js(controller_name=controller_name)
+
+        ok_(isinstance(js, Bundle),
+            msg='Must return an instance of Bundle')
+
+    @raises(TypeError)
+    def test_compile_js_non_string_should_raises_error(self):
+        controller_name = 3
+
+        js = compile_js(controller_name=controller_name)
+
+    @raises(ValueError)
+    def test_compile_js_0_length_string_should_raises_error(self):
+        controller_name = ''
+
+        js = compile_js(controller_name=controller_name)

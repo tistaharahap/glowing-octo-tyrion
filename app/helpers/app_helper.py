@@ -37,6 +37,13 @@ def create_app(config=config, env=env):
     return app
 
 def compile_assets(app, controller_name):
+    if not isinstance(app, Flask):
+        raise TypeError('The parameter app must be an instance of Flask')
+    if not isinstance(controller_name, str):
+        raise TypeError('The parameter controller_name must be an instance of String')
+    if len(controller_name) == 0:
+        raise ValueError('The parameter controller_name must have a length of more than 0')
+
     assets = Environment(app)
 
     js = compile_js(controller_name)
@@ -44,6 +51,11 @@ def compile_assets(app, controller_name):
     assets.register('js_all', js)
 
 def compile_js(controller_name):
+    if not isinstance(controller_name, str):
+        raise TypeError('The parameter controller_name must be an instance of String')
+    if len(controller_name) == 0:
+        raise ValueError('The parameter controller_name must have a length of more than 0')
+
     coffee_path = 'coffee/'
 
     static_abs_path = os.path.abspath('static')
