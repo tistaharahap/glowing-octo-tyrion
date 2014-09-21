@@ -1,7 +1,9 @@
 from flask import Flask
+from flask.ext.assets import Environment, Bundle
 from app.helpers import read_yaml, read_env
 from app.errors import HTTPMethodNotImplementedError, ControllerNotFoundError, ConfigNotFoundError
 import importlib
+import os.path
 
 
 #if __name__ != '__main__':
@@ -17,13 +19,45 @@ def create_app(config=config, env=env):
     if not env:
         raise ConfigNotFoundError('Environment is not set')
 
-    app = Flask(__name__)
+    tpl_folder = os.path.abspath('templates')
+    static_folder = os.path.abspath('static')
+
+    app = Flask(__name__,
+                template_folder=tpl_folder,
+                static_folder=static_folder,
+                static_url_path='/s')
     app.config['DEBUG'] = env['flask']['debug']
+    if app.config['DEBUG'] is True:
+        app.config['ASSETS_DEBUG'] = True
+
     app.config['SECRET_KEY'] = env['flask']['secret_key']
 
     create_routes(app)
 
     return app
+
+def compile_assets(app, controller_name):
+    assets = Environment(app)
+
+    js = compile_js(controller_name)
+
+    assets.register('js_all', js)
+
+def compile_js(controller_name):
+    coffee_path = 'coffee/'
+
+    static_abs_path = os.path.abspath('static')
+    bundle = ['%smain.coffee' % coffee_path]
+
+    controller_coffee_path = '%s/coffee/%s.coffee' % (static_abs_path, controller_name)
+    if os.path.isfile(controller_coffee_path):
+        bundle.append('%s%s.coffee' % (coffee_path, controller_name))
+
+    js = Bundle(*bundle,
+                filters='coffeescript,rjsmin',
+                output='out/a.js')
+
+    return js
 
 def create_routes(app, app_routes=routes):
     if not app_routes:
@@ -46,6 +80,8 @@ def create_routes(app, app_routes=routes):
         app.add_url_rule(route['uri'],
                          view_func=loaded_mod.as_view('%s_controller' % route['controller']),
                          methods=route['methods'])
+
+        #compile_assets(app, route['controller'])
 
 def load_class(full_class_string):
     class_data = full_class_string.split(".")
