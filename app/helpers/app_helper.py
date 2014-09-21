@@ -1,5 +1,6 @@
 from flask import Flask
 from flask.ext.assets import Environment, Bundle
+from flask.ctx import AppContext
 from app.helpers import read_yaml, read_env
 from app.errors import HTTPMethodNotImplementedError, ControllerNotFoundError, ConfigNotFoundError
 import importlib
@@ -12,6 +13,10 @@ routes = read_yaml('app/config/routes.yml')
 
 env = config.get(read_env())
 flask_config = env.get('flask') if env else None
+
+ASSET_TYPE_CSS = 'css'
+ASSET_TYPE_COFFEE = 'coffee'
+ASSET_TYPE_JS = 'js'
 
 def create_app(config=config, env=env):
     if not config:
@@ -37,8 +42,6 @@ def create_app(config=config, env=env):
     return app
 
 def compile_assets(app, controller_name):
-    if not isinstance(app, Flask):
-        raise TypeError('The parameter app must be an instance of Flask')
     if not isinstance(controller_name, str):
         raise TypeError('The parameter controller_name must be an instance of String')
     if len(controller_name) == 0:
@@ -46,30 +49,58 @@ def compile_assets(app, controller_name):
 
     assets = Environment(app)
 
-    js = compile_js(controller_name)
+    coffee = compile_asset(controller_name=controller_name,
+                           asset_type=ASSET_TYPE_COFFEE)
+    css = compile_asset(controller_name=controller_name,
+                        asset_type=ASSET_TYPE_CSS)
+    js = compile_asset(controller_name=controller_name,
+                       asset_type=ASSET_TYPE_JS)
 
+    assets.register('coffee_all', coffee)
+    assets.register('css_all', css)
     assets.register('js_all', js)
 
-def compile_js(controller_name):
+def compile_asset(controller_name, asset_type):
     if not isinstance(controller_name, str):
         raise TypeError('The parameter controller_name must be an instance of String')
     if len(controller_name) == 0:
         raise ValueError('The parameter controller_name must have a length of more than 0')
+    if not isinstance(asset_type, str):
+        raise TypeError('The parameter controller_name must be an instance of String')
+    if len(asset_type) == 0:
+        raise ValueError('The parameter controller_name must have a length of more than 0')
+    if asset_type != ASSET_TYPE_CSS and asset_type != ASSET_TYPE_COFFEE and asset_type != ASSET_TYPE_JS:
+        raise ValueError('The parameter asset_type is unknown')
 
-    coffee_path = 'coffee/'
+    asset_path = '%s/' % asset_type
 
     static_abs_path = os.path.abspath('static')
-    bundle = ['%smain.coffee' % coffee_path]
+    bundle = ['%smain.%s' % (asset_path, asset_type)]
 
-    controller_coffee_path = '%s/coffee/%s.coffee' % (static_abs_path, controller_name)
-    if os.path.isfile(controller_coffee_path):
-        bundle.append('%s%s.coffee' % (coffee_path, controller_name))
+    controller_asset_path = '%s/%s/%s.%s' % (static_abs_path, asset_type, controller_name, asset_type)
+    if os.path.isfile(controller_asset_path):
+        bundle.append('%s%s.%s' % (asset_path, controller_name, asset_type))
 
-    js = Bundle(*bundle,
-                filters='coffeescript,rjsmin',
-                output='out/a.js')
+    bundle_params = {
+        ASSET_TYPE_COFFEE: {
+            'filters': 'coffeescript,rjsmin',
+            'out': 'out/a.js'
+        },
+        ASSET_TYPE_CSS: {
+            'filters': 'cssmin',
+            'out': 'out/a.css'
+        },
+        ASSET_TYPE_JS: {
+            'filters': 'rjsmin',
+            'out': 'b.js'
+        }
+    }
 
-    return js
+    asset = Bundle(*bundle,
+                   filters=bundle_params[asset_type]['filters'],
+                   output=bundle_params[asset_type]['out'])
+
+    return asset
 
 def create_routes(app, app_routes=routes):
     if not app_routes:
