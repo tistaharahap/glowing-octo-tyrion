@@ -61,6 +61,12 @@ def compile_assets(app, controller_name):
     assets.register('js_all', js)
 
 def compile_asset(controller_name, asset_type):
+    eligible_asset_types = [
+        ASSET_TYPE_CSS,
+        ASSET_TYPE_COFFEE,
+        ASSET_TYPE_JS
+    ]
+
     if not isinstance(controller_name, str):
         raise TypeError('The parameter controller_name must be an instance of String')
     if len(controller_name) == 0:
@@ -69,7 +75,7 @@ def compile_asset(controller_name, asset_type):
         raise TypeError('The parameter controller_name must be an instance of String')
     if len(asset_type) == 0:
         raise ValueError('The parameter controller_name must have a length of more than 0')
-    if asset_type != ASSET_TYPE_CSS and asset_type != ASSET_TYPE_COFFEE and asset_type != ASSET_TYPE_JS:
+    if asset_type not in eligible_asset_types:
         raise ValueError('The parameter asset_type is unknown')
 
     asset_path = '%s/' % asset_type

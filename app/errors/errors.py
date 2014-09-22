@@ -1,9 +1,9 @@
-class KlikBCAError(Exception): pass
+class GlowingOctoTyrionError(Exception): pass
 
-class HTTPMethodNotImplementedError(KlikBCAError): pass
+class HTTPMethodNotImplementedError(GlowingOctoTyrionError): pass
 
-class ControllerNotFoundError(KlikBCAError): pass
+class ControllerNotFoundError(GlowingOctoTyrionError): pass
 
-class NoEnvSpecifiedError(KlikBCAError): pass
+class NoEnvSpecifiedError(GlowingOctoTyrionError): pass
 
-class ConfigNotFoundError(KlikBCAError): pass
+class ConfigNotFoundError(GlowingOctoTyrionError): pass

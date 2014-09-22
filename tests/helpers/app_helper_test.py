@@ -10,11 +10,11 @@ import copy
 class AppHelperTest(BaseTest):
 
     def test_load_class_success(self):
-        full_str = "app.errors.KlikBCAError"
+        full_str = "app.errors.GlowingOctoTyrionError"
 
         klazz = load_class(full_str)
 
-        eq_(klazz.__name__, 'KlikBCAError',
+        eq_(klazz.__name__, 'GlowingOctoTyrionError',
             msg='Different class name than what\'s being intended to load')
 
     @raises(AttributeError)
