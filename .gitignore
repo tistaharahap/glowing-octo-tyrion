@@ -6,3 +6,4 @@ static/out/*.css
 coverage.xml
 nosetests.xml
 .coverage
+.idea
