@@ -2,4 +2,6 @@ flask
 Flask-Assets
 PyYAML
 nose
+nosexcover
 cssmin
+requests
