@@ -14,6 +14,7 @@ default: &default
     klikbca: &klikbcaDefault
         username: username1234
         pin: "000000"
+        url: "http://127.0.0.1:9000/"
 
 test:
     <<: *default
