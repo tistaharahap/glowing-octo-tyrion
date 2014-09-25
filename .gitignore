@@ -3,7 +3,7 @@ app/config/config.yml
 static/.webassets-cache
 static/out/*.js
 static/out/*.css
-.idea
-.coverage
 coverage.xml
 nosetests.xml
+.coverage
+.idea

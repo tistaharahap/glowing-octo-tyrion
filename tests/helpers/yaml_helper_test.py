@@ -12,7 +12,7 @@ class YamlHelperTest(BaseTest):
 
         ok_(isinstance(config, dict),
             msg='Returned object must be an instance of dict')
-        ok_(config,
+        ok_(len(config.keys()) > 0,
             msg='Returned object must not be empty')
 
     @raises(ConfigNotFoundError)

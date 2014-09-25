@@ -12,18 +12,10 @@ class KlikBCA(OnlineBankingAbstracts):
     username = None
     password = None
 
-    def __init__(self, testing_app=None):
-        app = testing_app
-        if not app:
-            raise ValueError('If you set testing_app parameter, please make sure it\'s not None')
-        if not app.config.get('TESTING'):
-            app = current_app._get_current_object()
+    def __init__(self):
+        app = current_app._get_current_object()
 
-
-        try:
-            klikbca_config = app.config.get('ENV').get('klikbca')
-        except AttributeError:
-            raise AttributeError('The parameter testing_app is an improper app object')
+        klikbca_config = app.config.get('ENV').get('klikbca')
         if not klikbca_config:
             raise ConfigNotFoundError('KlikBCA config is not valid')
 

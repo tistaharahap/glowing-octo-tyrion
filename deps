@@ -1,3 +1,5 @@
 flask
 Flask-Assets
 PyYAML
+nose
+cssmin

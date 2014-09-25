@@ -1,5 +1,5 @@
 from tests.base_test import BaseTest
-from app.helpers import create_app, create_routes, load_class, compile_assets, compile_js
+from app.helpers import create_app, create_routes, load_class, compile_assets, compile_asset, ASSET_TYPE_COFFEE, ASSET_TYPE_CSS
 from nose.tools import raises, ok_, eq_
 from flask import Flask
 from flask.ext.assets import Environment, Bundle
@@ -10,11 +10,11 @@ import copy
 class AppHelperTest(BaseTest):
 
     def test_load_class_success(self):
-        full_str = "app.errors.KlikBCAError"
+        full_str = "app.errors.GlowingOctoTyrionError"
 
         klazz = load_class(full_str)
 
-        eq_(klazz.__name__, 'KlikBCAError',
+        eq_(klazz.__name__, 'GlowingOctoTyrionError',
             msg='Different class name than what\'s being intended to load')
 
     @raises(AttributeError)
@@ -73,14 +73,6 @@ class AppHelperTest(BaseTest):
         create_routes(app, app_routes=routes)
 
     @raises(TypeError)
-    def test_compile_assets_with_bad_app_should_raises_error(self):
-        app = {}
-        controller_name = 'home'
-
-        assets = compile_assets(app=app,
-                                controller_name=controller_name)
-
-    @raises(TypeError)
     def test_compile_assets_with_non_string_controller_name_should_raises_error(self):
         app = Flask(__name__)
         controller_name = {}
@@ -96,22 +88,25 @@ class AppHelperTest(BaseTest):
         assets = compile_assets(app=app,
                                 controller_name=controller_name)
 
-    def test_compile_js(self):
+    def test_compile_asset_coffee(self):
         controller_name = 'home'
 
-        js = compile_js(controller_name=controller_name)
+        coffee = compile_asset(controller_name=controller_name,
+                               asset_type=ASSET_TYPE_COFFEE)
 
-        ok_(isinstance(js, Bundle),
+        ok_(isinstance(coffee, Bundle),
             msg='Must return an instance of Bundle')
 
     @raises(TypeError)
-    def test_compile_js_non_string_should_raises_error(self):
+    def test_compile_asset_non_string_should_raises_error(self):
         controller_name = 3
 
-        js = compile_js(controller_name=controller_name)
+        coffee = compile_asset(controller_name=controller_name,
+                               asset_type=ASSET_TYPE_COFFEE)
 
     @raises(ValueError)
-    def test_compile_js_0_length_string_should_raises_error(self):
+    def test_compile_asset_0_length_string_should_raises_error(self):
         controller_name = ''
 
-        js = compile_js(controller_name=controller_name)
+        coffee = compile_asset(controller_name=controller_name,
+                               asset_type=ASSET_TYPE_COFFEE)
