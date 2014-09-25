@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+    <title>KlikBCA Extractor</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% assets "css_all" %}
+    <link rel="stylesheet" href="{{ ASSET_URL }}" type="text/css" />
+{% endassets %}
+</head>
+<body>
+    <header></header>
+
+    <nav>
+        <span id="collapse_nav">Show/hide nav</span>
+        <ul>
+            <li><a href="/this-month">This month</a> </li>
+            <li><a href="/last-30-days">Last 30 Days</a></li>
+            <li><a href="/ranged">Ranged</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+    </nav>
+
+    {% block body %}{% endblock %}
+
+{% assets "js_compiled_all" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{% endassets %}
+</body>
+</html>

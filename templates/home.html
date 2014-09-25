@@ -1,0 +1,19 @@
+{% extends "index.html" %}
+{% block body %}
+<section id="saldo">
+    <div class="small-12 small-centered columns">
+        <h2>{{ saldo }}</h2><br />
+        <span>in <strong>IDR</strong></span>
+    </div>
+</section>
+
+<section class="row" id="content">
+    {% for trans in transactions %}
+    <article class="{{ trans.mutation_type }}">
+        <span>{{ trans.created_at }}</span>
+        <h4>{{ trans.mutation }}</h4>
+        <blockquote>{{ trans.description }}</blockquote>
+    </article>
+    {% endfor %}
+</section>
+{% endblock %}

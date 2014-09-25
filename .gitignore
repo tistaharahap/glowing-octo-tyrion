@@ -1,2 +1,9 @@
 *.pyc
-.DS_Store
+app/config/config.yml
+static/.webassets-cache
+static/out/*.js
+static/out/*.css
+coverage.xml
+nosetests.xml
+.coverage
+.idea
