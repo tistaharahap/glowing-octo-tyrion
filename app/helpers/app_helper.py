@@ -36,7 +36,7 @@ def create_app(config=config, env=env):
     #if app.config['DEBUG'] is True:
     #    app.config['ASSETS_DEBUG'] = True
 
-    app.config['SECRET_KEY'] = env['flask']['secret_key']
+    app.config['SECRET_KEY'] = env['flask'].get('secret_key')
     app.config['ENV'] = env
 
     create_routes(app)
