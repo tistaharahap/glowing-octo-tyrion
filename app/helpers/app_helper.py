@@ -31,7 +31,8 @@ def create_app(config=config, env=env):
                 template_folder=tpl_folder,
                 static_folder=static_folder,
                 static_url_path='/s')
-    app.config['DEBUG'] = env['flask']['debug']
+    
+    app.config['DEBUG'] = env['flask'].get('debug')
     #if app.config['DEBUG'] is True:
     #    app.config['ASSETS_DEBUG'] = True
 
